@@ -6,7 +6,7 @@ Yii-PDF Extension
 [![Latest Unstable Version](https://poser.pugx.org/borales/yii-pdf/v/unstable.svg)](https://packagist.org/packages/borales/yii-pdf) 
 [![License](https://poser.pugx.org/borales/yii-pdf/license.svg)](https://packagist.org/packages/borales/yii-pdf)
 
-Небольшое расширение для Yii Framework, которое делает "обертку" для нескольких PHP-библиотек
+Небольшое расширение для Yii Framework, которое является "оберткой" для нескольких PHP-библиотек
 (mPDF и HTML2PDF на данный момент) для конвертации HTML в PDF
 
 ### Ссылки
@@ -19,8 +19,8 @@ Yii-PDF Extension
 ### Системные требования
 
 * Yii 1.1.9 или выше
-* [mPDF](http://www.mpdf1.com/mpdf/download) версия 5.3 (была выпущена 2011-07-21) или выше
-* [HTML2PDF](http://sourceforge.net/projects/phphtml2pdf/) версия 4.03 (была выпущена 2011-05-27) или выше
+* [mPDF](http://www.mpdf1.com/mpdf/download) версия 5.3 (была выпущена 21.07.2011) или выше
+* [HTML2PDF](http://sourceforge.net/projects/phphtml2pdf/) версия 4.03 (была выпущена 27.05.2011) или выше
 
 ### Официальная документация и примеры
 
@@ -30,8 +30,8 @@ Yii-PDF Extension
 ### Установка
 
 * Скачайте и распакуйте расширение в директорию `protected/extensions/yii-pdf`
-* Скачайте и распакуйте библиотеку ([mPDF](http://www.mpdf1.com/mpdf/download) and/or [HTML2PDF](http://sourceforge.net/projects/phphtml2pdf/))
-в свою папку каталога `protected/vendors` или укажите новое значение для параметра `'librarySourcePath'` в массиве `'params'`
+* Скачайте и распакуйте библиотеку ([mPDF](http://www.mpdf1.com/mpdf/download) и/или [HTML2PDF](http://sourceforge.net/projects/phphtml2pdf/))
+в свою директорию каталога `protected/vendors` или укажите новое значение для параметра `'librarySourcePath'` в массиве `'params'`
 * Массив `'defaultParams'` - это массив параметров по умолчанию для конструктора выбранной библиотеки.
 Если хотите изменить параметры по умолчанию - можете установить их в конфигурационном файле (как показано ниже).
 При изменении - **вы должны сохранить порядок элементов массива!**
@@ -51,11 +51,13 @@ Yii-PDF Extension
             'params'        => array(
                 'mpdf'     => array(
                     'librarySourcePath' => 'application.vendors.mpdf.*',
+					// 'librarySourcePath' => 'application.vendors.mpdf.src.*', // ИЛИ так (для MPDF 7.0.*)
                     'constants'         => array(
                         '_MPDF_TEMP_PATH' => Yii::getPathOfAlias('application.runtime'),
                     ),
-                    'class'=>'mpdf', // Для некоторых "регистрочувствительных" систем
-                    /*'defaultParams'     => array( // Детальней: http://mpdf1.com/manual/index.php?tid=184
+                    'class'=>'mpdf', // точное имя файла с основным классом библиотеки, который будет загружен из папки vendors.
+					// 'class'=>'\Mpdf\Mpdf', // ИЛИ так (для MPDF 7.0.*)
+                    /*'defaultParams'     => array( // Подробнее: http://mpdf1.com/manual/index.php?tid=184
                         'mode'              => '', //  This parameter specifies the mode of the new document.
                         'format'            => 'A4', // format A4, A5, ...
                         'default_font_size' => 0, // Sets the default document font size in points (pt)
@@ -72,7 +74,7 @@ Yii-PDF Extension
                 'HTML2PDF' => array(
                     'librarySourcePath' => 'application.vendors.html2pdf.*',
                     'classFile'         => 'html2pdf.class.php', // For adding to Yii::$classMap
-                    /*'defaultParams'     => array( // Детальней: http://wiki.spipu.net/doku.php?id=html2pdf:en:v4:accueil
+                    /*'defaultParams'     => array( // Подробнее: http://wiki.spipu.net/doku.php?id=html2pdf:en:v4:accueil
                         'orientation' => 'P', // landscape or portrait orientation
                         'format'      => 'A4', // format A4, A5, ...
                         'language'    => 'en', // language: fr, en, it ...
@@ -100,11 +102,32 @@ Yii-PDF Extension
 
         # Вы можете с легкостью переопределить параметры по умолчанию для конструктора
         $mPDF1 = Yii::app()->ePdf->mpdf('', 'A5');
+		
+		# При использовании MPDF 7.0.* параметры передаются в одном массиве
+		$mPDF1 = Yii::app()->ePdf->mpdf([
+            'mode' => '',
+            'format' => 'A5'
+        ]);
 
-        # render (полная страница page)
+		# Весь список параметров конструктора(MPDF 7.0.*)
+		$mPDF1 = Yii::app()->ePdf->mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'default_font_size' => 10,
+            'default_font' => 'freeserif',
+            'mgl' => 15,
+            'mgr' => 15,
+            'mgt' => 16,
+            'mgb' => 16,
+            'mgh' => 9,
+            'mgf' => 9,
+            'orientation' => 'P'
+        ]);
+
+        # render (вся страница)
         $mPDF1->WriteHTML($this->render('index', array(), true));
 
-        # Загрузить таблицу стилей в документ
+        # Загрузить таблицу стилей
         $stylesheet = file_get_contents(Yii::getPathOfAlias('webroot.css') . '/main.css');
         $mPDF1->WriteHTML($stylesheet, 1);
 
@@ -119,14 +142,14 @@ Yii-PDF Extension
 
         ////////////////////////////////////////////////////////////////////////////////////
 
-        # у HTML2PDF очень схож синтаксис
+        # синтаксис у HTML2PDF очень похож 
         $html2pdf = Yii::app()->ePdf->HTML2PDF();
         $html2pdf->WriteHTML($this->renderPartial('index', array(), true));
         $html2pdf->Output();
 
         ////////////////////////////////////////////////////////////////////////////////////
 
-        # Пример с HTML2PDF wiki: Отправка PDF по почте
+        # Пример из HTML2PDF wiki: Отправка PDF по почте
         $content_PDF = $html2pdf->Output('', EYiiPdf::OUTPUT_TO_STRING);
         require_once(dirname(__FILE__).'/pjmail/pjmail.class.php');
         $mail = new PJmail();
@@ -143,5 +166,5 @@ Yii-PDF Extension
 ### Лицензия
 
 * **mPDF** - GNU General Public License version 2
-* **HTML2PDF** - GNU Library or Lesser General Public License (LGPL)
+* **HTML2PDF** - GNU Library или Lesser General Public License (LGPL)
 * [Это расширение](https://github.com/Borales/yii-pdf) было выпущено под [New BSD License](http://www.opensource.org/licenses/bsd-license.php)
