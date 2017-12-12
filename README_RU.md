@@ -19,18 +19,19 @@ Yii-PDF Extension
 ### Системные требования
 
 * Yii 1.1.9 или выше
-* [mPDF](http://www.mpdf1.com/mpdf/download) версия 5.3 (была выпущена 21.07.2011) или выше
+* [mPDF](http://www.mpdf1.com/mpdf/) версия 5.3 (была выпущена 21.07.2011) или выше
+* [mPDF](https://mpdf.github.io/) версия 7.0.0 (была выпущена 19.10.2017) или выше
 * [HTML2PDF](http://sourceforge.net/projects/phphtml2pdf/) версия 4.03 (была выпущена 27.05.2011) или выше
 
 ### Официальная документация и примеры
 
-* mPDF - [manual](http://mpdf1.com/manual/) и [примеры](http://www.mpdf1.com/mpdf/examples)
+* mPDF - версия 5.x/6.x [руководство и примеры](http://mpdf1.com/mpdf/), версия 7.x [руководство](https://mpdf.github.io/)
 * HTML2PDF - [Wiki](http://wiki.spipu.net/doku.php?id=html2pdf:en:Accueil) и [примеры](http://html2pdf.fr/en/example)
 
 ### Установка
 
 * Скачайте и распакуйте расширение в директорию `protected/extensions/yii-pdf`
-* Скачайте и распакуйте библиотеку ([mPDF](http://www.mpdf1.com/mpdf/download) и/или [HTML2PDF](http://sourceforge.net/projects/phphtml2pdf/))
+* Скачайте и распакуйте библиотеку ([mPDF](http://www.mpdf1.com/mpdf/) версии 5.x/6.x и/или [mPDF](https://github.com/mpdf/mpdf/releases) версии 7.x и/или [HTML2PDF](http://sourceforge.net/projects/phphtml2pdf/))
 в свою директорию каталога `protected/vendors` или укажите новое значение для параметра `'librarySourcePath'` в массиве `'params'`
 * Массив `'defaultParams'` - это массив параметров по умолчанию для конструктора выбранной библиотеки.
 Если хотите изменить параметры по умолчанию - можете установить их в конфигурационном файле (как показано ниже).
@@ -51,13 +52,13 @@ Yii-PDF Extension
             'params'        => array(
                 'mpdf'     => array(
                     'librarySourcePath' => 'application.vendors.mpdf.*',
-					// 'librarySourcePath' => 'application.vendors.mpdf.src.*', // ИЛИ так (для MPDF 7.0.*)
+					// 'librarySourcePath' => 'application.vendors.mpdf.src.*', // ИЛИ так (для MPDF 7.x)
                     'constants'         => array(
                         '_MPDF_TEMP_PATH' => Yii::getPathOfAlias('application.runtime'),
                     ),
                     'class'=>'mpdf', // точное имя файла с основным классом библиотеки, который будет загружен из папки vendors.
-					// 'class'=>'\Mpdf\Mpdf', // ИЛИ так (для MPDF 7.0.*)
-                    /*'defaultParams'     => array( // Подробнее: http://mpdf1.com/manual/index.php?tid=184
+					// 'class'=>'\Mpdf\Mpdf', // ИЛИ так (для MPDF 7.x)
+                    /*'defaultParams'     => array( // Подробнее: http://mpdf1.com/mpdf/ или (для MPDF 7.x): https://mpdf.github.io/configuration/configuration-v7-x.html
                         'mode'              => '', //  This parameter specifies the mode of the new document.
                         'format'            => 'A4', // format A4, A5, ...
                         'default_font_size' => 0, // Sets the default document font size in points (pt)
@@ -103,25 +104,11 @@ Yii-PDF Extension
         # Вы можете с легкостью переопределить параметры по умолчанию для конструктора
         $mPDF1 = Yii::app()->ePdf->mpdf('', 'A5');
 		
-		# При использовании MPDF 7.0.* параметры передаются в одном массиве
+		# При использовании MPDF версии 7.x классу передаётся массив конфигурационных параметров.
+		# Подробнее: [параметры конфигурации](https://mpdf.github.io/reference/mpdf-variables/overview.html)
 		$mPDF1 = Yii::app()->ePdf->mpdf([
             'mode' => '',
             'format' => 'A5'
-        ]);
-
-		# Весь список параметров конструктора(MPDF 7.0.*)
-		$mPDF1 = Yii::app()->ePdf->mpdf([
-            'mode' => 'utf-8',
-            'format' => 'A4',
-            'default_font_size' => 10,
-            'default_font' => 'freeserif',
-            'mgl' => 15,
-            'mgr' => 15,
-            'mgt' => 16,
-            'mgb' => 16,
-            'mgh' => 9,
-            'mgf' => 9,
-            'orientation' => 'P'
         ]);
 
         # render (вся страница)

@@ -18,18 +18,19 @@ It can convert valid HTML and xHTML to PDF
 ### Requirements
 
 * Yii 1.1.9 or above
-* [mPDF](http://www.mpdf1.com/mpdf/download) version 5.3 (has been released 2011-07-21) or above
+* [mPDF](http://www.mpdf1.com/mpdf/) version 5.3 (has been released 2011-07-21) or above
+* [mPDF](https://mpdf.github.io/) version 7.0.0 (has been released 2017-10-19) or above
 * [HTML2PDF](http://sourceforge.net/projects/phphtml2pdf/) version 4.03 (has been released 2011-05-27) or above
 
 ### Official documentation and examples
 
-* mPDF - [manual](http://mpdf1.com/manual/) and [examples](http://www.mpdf1.com/mpdf/examples)
+* mPDF - version 5.x/6.x [manual and examples](http://www.mpdf1.com/mpdf/), version 7.x [manual](https://mpdf.github.io/)
 * HTML2PDF - [Wiki](http://wiki.spipu.net/doku.php?id=html2pdf:en:Accueil) and [examples](http://html2pdf.fr/en/example)
 
 ### Installation
 
 * Download and extract extension to the directory `protected/extensions/yii-pdf`
-* Download and extract library ([mPDF](http://www.mpdf1.com/mpdf/download) and/or [HTML2PDF](http://sourceforge.net/projects/phphtml2pdf/))
+* Download and extract library ([mPDF](http://www.mpdf1.com/mpdf/) version 5.x/6.x and/or [mPDF](https://github.com/mpdf/mpdf/releases) version 7.x and/or [HTML2PDF](http://sourceforge.net/projects/phphtml2pdf/))
 to own directory in catalog `protected/vendors` or set new value for `'librarySourcePath'` parameter in `'params'` array
 * Array `'defaultParams'` - this is an array of constructor's default params of selected library.
 If you want to change default params - you can set them in config file (like shown below).
@@ -50,11 +51,13 @@ If you do so - **you must keep the order of array items!**
 			'params'		=> array(
 				'mpdf'	   => array(
 					'librarySourcePath' => 'application.vendors.mpdf.*',
+					// 'librarySourcePath' => 'application.vendors.mpdf.src.*', // OR like this (for MPDF 7.x)
 					'constants'			=> array(
 						'_MPDF_TEMP_PATH' => Yii::getPathOfAlias('application.runtime'),
 					),
 					'class'=>'mpdf', // the literal class filename to be loaded from the vendors folder.
-					/*'defaultParams'	  => array( // More info: http://mpdf1.com/manual/index.php?tid=184
+					// 'class'=>'\Mpdf\Mpdf', // OR like this (for MPDF 7.x)
+					/*'defaultParams'	  => array( // More info: http://mpdf1.com/mpdf/ or (for MPDF 7.x): https://mpdf.github.io/configuration/configuration-v7-x.html
 						'mode'				=> '', //  This parameter specifies the mode of the new document.
 						'format'			=> 'A4', // format A4, A5, ...
 						'default_font_size' => 0, // Sets the default document font size in points (pt)
@@ -99,6 +102,13 @@ If you do so - **you must keep the order of array items!**
 
 		# You can easily override default constructor's params
 		$mPDF1 = Yii::app()->ePdf->mpdf('', 'A5');
+		
+		# If you are using MPDF version 7.x the class accepts only one parameter, an array of configuration directives.
+		# See [configuration directives](https://mpdf.github.io/reference/mpdf-variables/overview.html) for reference.
+		$mPDF1 = Yii::app()->ePdf->mpdf([
+            'mode' => '',
+            'format' => 'A5'
+        ]);
 
 		# render (full page)
 		$mPDF1->WriteHTML($this->render('index', array(), true));
