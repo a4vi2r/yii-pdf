@@ -12,7 +12,7 @@
 	],
 	"require": {
 		"yiisoft/yii": ">=1.1.13",
-		"mpdf/mpdf": "dev-master",
-		"ensepar/html2pdf": "dev-master"
+		"mpdf/mpdf": "^7.0",
+		"spipu/html2pdf": "^5.0"
 	}
 }
